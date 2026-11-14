@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./demo.db"
+}
+
+enum Role {
+  RESIDENT
+  OPERATOR
+  EXECUTOR
+}
+
+enum Status {
+  NEW
+  IN_REVIEW
+  ASSIGNED
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  REJECTED
+}
+
+enum TaskStatus {
+  ASSIGNED
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model User {
+  decisions     ReviewDecision[]
+  schedules     CareSchedule[]
+  id            Int              @id @default(autoincrement())
+  name          String
+  role          Role
+  zones         Zone[]
+  serviceEvents ServiceEvent[]
+  reports       Report[]
+  tasks         Task[]
+  history       StatusHistory[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model Report {
+  treeId        Int?
+  tree          Tree?            @relation(fields: [treeId], references: [id], onDelete: Restrict)
+  decisions     ReviewDecision[]
+  id            Int              @id @default(autoincrement())
+  seedKey       String?          @unique
+  category      String
+  title         String
+  description   String
+  address       String
+  lat           Float
+  lng           Float
+  contact       String
+  authorId      Int
+  author        User             @relation(fields: [authorId], references: [id])
+  status        Status           @default(NEW)
+  clarification String?
+  version       Int              @default(0)
+  task          Task?
+  photos        ReportPhoto[]
+  history       StatusHistory[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model Task {
+  occurrence  Occurrence?
+  id          Int            @id @default(autoincrement())
+  reportId    Int?           @unique
+  report      Report?        @relation(fields: [reportId], references: [id], onDelete: Restrict)
+  treeId      Int?
+  tree        Tree?          @relation(fields: [treeId], references: [id], onDelete: Restrict)
+  zoneId      Int?
+  zone        Zone?          @relation(fields: [zoneId], references: [id], onDelete: Restrict)
+  workType    String?
+  scheduledAt DateTime?
+  events      ServiceEvent[]
+  seedKey     String?        @unique
+  assigneeId  Int
+  assignee    User           @relation(fields: [assigneeId], references: [id])
+  dueAt       DateTime
+  status      TaskStatus     @default(ASSIGNED)
+  comment     String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([assigneeId, status])
+}
+
+model Tree {
+  reports   Report[]
+  decisions ReviewDecision[]
+  schedules CareSchedule[]
+  id        Int              @id @default(autoincrement())
+  seedKey   String?          @unique
+  species   String
+  lat       Float
+  lng       Float
+  address   String
+  zoneId    Int?
+  zone      Zone?            @relation(fields: [zoneId], references: [id], onDelete: Restrict)
+  planted   DateTime?
+  inspected DateTime?
+  condition String
+  photo     String?          @unique
+  comment   String
+  version   Int              @default(0)
+  tasks     Task[]
+}
+
+model Zone {
+  schedules CareSchedule[]
+  id        Int            @id @default(autoincrement())
+  seedKey   String?        @unique
+  name      String
+  kind      String
+  lat       Float
+  lng       Float
+  address   String
+  area      Float?
+  condition String
+  crewId    Int
+  crew      User           @relation(fields: [crewId], references: [id], onDelete: Restrict)
+  trees     Tree[]
+  tasks     Task[]
+}
+
+model ServiceEvent {
+  id        Int        @id @default(autoincrement())
+  taskId    Int
+  task      Task       @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  actorId   Int
+  actor     User       @relation(fields: [actorId], references: [id])
+  status    TaskStatus
+  message   String
+  photo     String?    @unique
+  createdAt DateTime   @default(now())
+}
+
+model ReportPhoto {
+  id        Int      @id @default(autoincrement())
+  reportId  Int
+  report    Report   @relation(fields: [reportId], references: [id])
+  filename  String   @unique
+  kind      String
+  createdAt DateTime @default(now())
+}
+
+model ReviewDecision {
+  id          Int      @id @default(autoincrement())
+  reportId    Int?
+  report      Report?  @relation(fields: [reportId], references: [id], onDelete: Restrict)
+  treeId      Int?
+  tree        Tree?    @relation(fields: [treeId], references: [id], onDelete: Restrict)
+  actorId     Int
+  actor       User     @relation(fields: [actorId], references: [id])
+  kind        String
+  value       String
+  explanation String
+  action      String?
+  image       String?
+  source      String
+  candidateId Int?
+  createdAt   DateTime @default(now())
+
+  @@index([reportId, kind, id])
+  @@index([treeId, image, id])
+}
+
+model CareSchedule {
+  id           Int          @id @default(autoincrement())
+  requestKey   String       @unique
+  treeId       Int?
+  tree         Tree?        @relation(fields: [treeId], references: [id], onDelete: Restrict)
+  zoneId       Int?
+  zone         Zone?        @relation(fields: [zoneId], references: [id], onDelete: Restrict)
+  assigneeId   Int
+  assignee     User         @relation(fields: [assigneeId], references: [id], onDelete: Restrict)
+  workType     String
+  startDay     String
+  endDay       String
+  intervalDays Int
+  occurrences  Occurrence[]
+  createdAt    DateTime     @default(now())
+}
+
+model Occurrence {
+  scheduleId Int
+  schedule   CareSchedule @relation(fields: [scheduleId], references: [id], onDelete: Restrict)
+  day        String
+  taskId     Int          @unique
+  task       Task         @relation(fields: [taskId], references: [id], onDelete: Restrict)
+
+  @@id([scheduleId, day])
+}
+
+model StatusHistory {
+  id         Int      @id @default(autoincrement())
+  reportId   Int
+  report     Report   @relation(fields: [reportId], references: [id])
+  actorId    Int
+  actor      User     @relation(fields: [actorId], references: [id])
+  fromStatus Status?
+  toStatus   Status
+  message    String
+  createdAt  DateTime @default(now())
+
+  @@index([reportId, id])
+}

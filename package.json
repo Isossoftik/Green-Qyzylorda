@@ -1,0 +1,44 @@
+{
+  "name": "green-qyzylorda-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack -H 127.0.0.1",
+    "build": "next build --webpack",
+    "start": "next start -H 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "db:setup": "node scripts/ensure-db.mjs && prisma generate && prisma migrate deploy && node scripts/seed.mjs",
+    "db:seed": "node scripts/seed.mjs",
+    "test": "node --test tests/lifecycle.test.mjs",
+    "backup": "py -3 scripts/backup.py"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@prisma/client": "^6.19.3",
+    "@radix-ui/react-slot": "^1.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.72.0",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "recharts": "^3.10.1",
+    "sharp": "^0.35.5",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss": "^8.5.32",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.0"
+  }
+}

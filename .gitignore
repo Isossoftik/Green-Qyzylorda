@@ -1,0 +1,15 @@
+node_modules/
+.next/
+*.tsbuildinfo
+next-env.d.ts
+.env*.local
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+
+.tools/
+
+prisma/*.db*
+uploads/

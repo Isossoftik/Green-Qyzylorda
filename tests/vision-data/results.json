@@ -1,0 +1,110 @@
+{
+  "ready": true,
+  "model": "CLIP ViT-B/32 INT8 · 6b7c523703ae",
+  "provider": "CPUExecutionProvider",
+  "load_ms": 1694,
+  "worker_peak_bytes": 272281600,
+  "correct": 5,
+  "count": 10,
+  "accuracy": 0.5,
+  "median_ms": 54.05,
+  "confusion": [
+    [
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0
+    ]
+  ],
+  "photos": [
+    {
+      "file": "dry/1.jpg",
+      "actual": 0,
+      "predicted": 0,
+      "ms": 56.9
+    },
+    {
+      "file": "dry/2.jpg",
+      "actual": 0,
+      "predicted": 1,
+      "ms": 60.2
+    },
+    {
+      "file": "damage/1.jpg",
+      "actual": 1,
+      "predicted": 1,
+      "ms": 62.3
+    },
+    {
+      "file": "damage/2.jpg",
+      "actual": 1,
+      "predicted": 1,
+      "ms": 51.2
+    },
+    {
+      "file": "litter/1.jpg",
+      "actual": 2,
+      "predicted": 2,
+      "ms": 50.6
+    },
+    {
+      "file": "litter/2.jpg",
+      "actual": 2,
+      "predicted": 2,
+      "ms": 49.2
+    },
+    {
+      "file": "landscape/1.jpg",
+      "actual": 3,
+      "predicted": 0,
+      "ms": 48.7
+    },
+    {
+      "file": "landscape/2.jpg",
+      "actual": 3,
+      "predicted": 2,
+      "ms": 64.3
+    },
+    {
+      "file": "other/1.jpg",
+      "actual": 4,
+      "predicted": 2,
+      "ms": 57.7
+    },
+    {
+      "file": "other/2.jpg",
+      "actual": 4,
+      "predicted": 2,
+      "ms": 50.7
+    }
+  ]
+}
